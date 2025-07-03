@@ -43,12 +43,13 @@ func _process(delta: float) -> void:
 	if(abs(dx) + abs(dy) > 1):
 		velocity = velocity.normalized()
 		
-	velocity *= SPEED
-	move_and_slide()
+	velocity *= delta * SPEED
+	move_and_collide(velocity)
 	
 	animate()
 
 	pass
+
 
 func animate() -> void:
 	var currentAnim = $AnimatedSprite2D.animation

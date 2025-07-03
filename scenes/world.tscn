@@ -6,16 +6,24 @@
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rwgxs"]
 texture = ExtResource("1_nnsk1")
 0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 1:0/next_alternative_id = 3
 1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 2:0/next_alternative_id = 2
 2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 4:0/0 = 0
+4:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 5:0/0 = 0
+5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 6:0/0 = 0
+6:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5, -5, 5, -5, 5, 7, -5.5, 7)
 
 [sub_resource type="TileSet" id="TileSet_e5uuo"]
+physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_rwgxs")
 
 [node name="World" type="Node2D"]
