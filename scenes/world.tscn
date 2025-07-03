@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=4 uid="uid://cvku7b5qxaqnc"]
+
+[ext_resource type="Texture2D" uid="uid://uqhw2r1lrsy6" path="res://graphics/tileset.png" id="1_nnsk1"]
+[ext_resource type="PackedScene" uid="uid://cxuhgwk4rgduy" path="res://scenes/player.tscn" id="2_rwgxs"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rwgxs"]
+texture = ExtResource("1_nnsk1")
+0:0/0 = 0
+1:0/next_alternative_id = 3
+1:0/0 = 0
+2:0/next_alternative_id = 2
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_e5uuo"]
+sources/0 = SubResource("TileSetAtlasSource_rwgxs")
+
+[node name="World" type="Node2D"]
+
+[node name="Layer0" type="TileMapLayer" parent="."]
+use_parent_material = true
+tile_map_data = PackedByteArray("AAD/////AAAEAAAAAAD///7/AAABAAAAAAAAAP7/AAACAAAAAAAAAP//AAAFAAAAAAABAP7/AAADAAAAAAABAP//AAAGAAAAAAA=")
+tile_set = SubResource("TileSet_e5uuo")
+
+[node name="Player" parent="." instance=ExtResource("2_rwgxs")]
+position = Vector2(65, 13)
