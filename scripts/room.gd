@@ -4,6 +4,13 @@ var x
 var y
 var width
 var height
+		
+var connections: int:
+	set(v):
+		connections = clampi(v, 0, 4)
+		
+func isConnected() -> bool:
+	return connections > 0
 
 func _init(x: int, y: int, width: int, height: int):
 	self.x = x

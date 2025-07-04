@@ -31,10 +31,18 @@ var Room = load("res://scripts/room.gd")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var numRooms = randi_range(MIN_ROOMS, MAX_ROOMS)
+	
+	var astar = AStarGrid2D.new()
+	astar.region = Rect2i(0, 0, WIDTH, HEIGHT)
+	astar.cell_size = Vector2(1, 1)
+	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar.update()
+	
 	var rooms = []
 	var retries = 0
 	while rooms.size() != numRooms:
-		print(rooms.size(), " / ", numRooms)
 		var x = randi_range(1, WIDTH - 1)
 		var y = randi_range(1, WIDTH - 1)
 		var w = randi_range(ROOM_MIN_WIDTH, ROOM_MAX_WIDTH)
@@ -57,7 +65,7 @@ func _ready() -> void:
 		
 		if (spawnRoom == null):
 			spawnRoom = room
-		placeRoom(room)
+		placeRoom(room, astar)
 	
 	if(rooms.size() > 1):
 		var connections = 0
@@ -67,18 +75,15 @@ func _ready() -> void:
 			if (other.x == first.x and other.y == first.y):
 				continue
 			
-			connectRooms(first, other)
+			connectRooms(first, other, astar)
 			connections += 1
 	
 	$Player.position = Vector2((spawnRoom.x * 16) + (spawnRoom.width / 2 * 16), (spawnRoom.y * 16) + (spawnRoom.height / 2 * 16))
-	pass # Replace with function body.
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-func placeRoom(room: Room) -> void:
+func placeRoom(room: Room, astar: AStarGrid2D) -> void:
+	astar.fill_solid_region(Rect2i(room.x - 1, room.y - 1, room.width + 2, room.height + 2))
+	
 	for x in range(room.x, room.x + room.width):
 		for y in range(room.y, room.y + room.height):
 			var cell
@@ -105,30 +110,46 @@ func placeRoom(room: Room) -> void:
 				continue
 			walls.set_cell(Vector2i(x, y), 0, cell)
 
-func connectRooms(a: Room, b: Room) -> void:
-	var start = pickRandomDoor(a)
-	var end = pickRandomDoor(b)
+func connectRooms(a: Room, b: Room, astar: AStarGrid2D) -> void:
+	var start = pickRandomDoor(a, astar)
+	var end = pickRandomDoor(b, astar)
 	
-	for x in range(start.x, end.x):
-		ground.set_cell(Vector2i(x, start.y), 0, STONE_FLOOR)
-		walls.set_cell(Vector2i(x, start.y), -1)
+	var points = astar.get_point_path(start, end)
+	for point in points:
+		astar.set_point_solid(point)
+		ground.set_cell(point, 0, STONE_FLOOR)
+		walls.set_cell(point, -1)
 	
-	for y in range(start.y, end.y):
-		ground.set_cell(Vector2i(end.x, y), 0, STONE_FLOOR)
-		walls.set_cell(Vector2i(end.x, y), -1)
-	
+	a.connections += 1
+	b.connections += 1
 	pass
 
-func pickRandomDoor(a: Room) -> Vector2i:
+func pickRandomDoor(a: Room, astar: AStarGrid2D) -> Vector2i:
+	# One of four midpoints on the walls of the room (N, E, S, W)
 	var start
+	# All rooms have a 1 tile border expanding around them that
+	# is marked as solid in the astar grid. This must be set to
+	# non-solid for paths to work
+	var pathOut
 	var rand = randi_range(0, 100)
 	match rand:
 		var i when i < 25:
+			# West door
 			start = Vector2i(a.x, a.y + (a.height / 2))
+			pathOut = Vector2i(a.x - 1, start.y)
 		var i when i < 50:
+			# North (top) door
 			start = Vector2i(a.x + (a.width / 2), a.y)
+			pathOut = Vector2i(start.x, start.y - 1)
 		var i when i < 75:
-			start = Vector2i(a.x + a.width, a.y + (a.height / 2))
+			# East door
+			start = Vector2i(a.x + a.width - 1, a.y + (a.height / 2))
+			pathOut = Vector2i(start.x + 1, start.y)
 		_:
-			start = Vector2i(a.x + (a.width / 2), a.y + a.height)
+			# South door
+			start = Vector2i(a.x + (a.width / 2), a.y + a.height - 1)
+			pathOut = Vector2i(start.x, start.y + 1)
+			
+	astar.set_point_solid(start, false)
+	astar.set_point_solid(pathOut, false)
 	return start
