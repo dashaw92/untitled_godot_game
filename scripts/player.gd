@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 750
+const SPEED = 75
 enum Facing {
 	left = 0,
 	right = 1,
