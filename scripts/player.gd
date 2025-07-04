@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 75
+const SPEED = 750
 enum Facing {
 	left = 0,
 	right = 1,
@@ -19,6 +19,10 @@ var walking = false
 func _ready() -> void:
 	pass # Replace with function body.
 
+func _input(event: InputEvent) -> void:
+	var zoom = Input.get_axis("zoom_out", "zoom_in")
+	$Camera2D.zoom += Vector2(zoom / 10, zoom / 10)
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
