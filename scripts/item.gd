@@ -5,6 +5,10 @@ static var CELL_SIZE = 16
 static var WIDTH = SPRITES.get_width() / CELL_SIZE
 
 static var atlas = []
+# Generates the sprite atlas from the spritesheet.
+# Contents of atlas are populated based off the ItemType
+# enum, so for a texture to be used, there most be an
+# ItemType constant associated to that cell in the sheet.
 static func generateSprites():
 	atlas.resize(ItemType.values().size())
 	for type in ItemType.values():
@@ -23,12 +27,10 @@ static func getSprite(item: ItemType) -> AtlasTexture:
 	
 	return atlas[item]
 
-var type: ItemType
-
-func _init(type: ItemType) -> void:
-	self.type = type
-
+# Items correspond to textures via the ordering of these constants
+# The first item is the first texture in the atlas at 0, 0, and the
+# following is at 16, 0, so on
 enum ItemType {
-	Pickaxe = 0,
-	Sword = 1,
+	Pickaxe,
+	Sword,
 }
